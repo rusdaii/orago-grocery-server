@@ -99,6 +99,12 @@
       "relation": "oneToOne",
       "target": "api::address.address",
       "mappedBy": "userId"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
     }
   }
 }
