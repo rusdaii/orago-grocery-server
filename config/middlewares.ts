@@ -8,7 +8,6 @@ export default [
   "strapi::session",
   "strapi::favicon",
   "strapi::public",
-  "strapi::cors",
   {
     name: "strapi::security",
     config: {
@@ -33,6 +32,14 @@ export default [
           upgradeInsecureRequests: null,
         },
       },
+    },
+  },
+  {
+    name: "strapi::cors",
+    config: {
+      origin: ["http://localhost:3000", "https://orago.vercel.app"],
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+      headers: ["Content-Type", "Authorization", "Origin", "Accept"],
     },
   },
 ];
