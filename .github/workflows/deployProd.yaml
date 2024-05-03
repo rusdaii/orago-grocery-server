@@ -34,5 +34,5 @@ jobs:
               cd $PROJECT_NAME
             fi
 
-            docker build -t orago-server:latest -f Dockerfile.prod .
-            docker run orago-server
+            sudo docker build -t orago-server:latest -f Dockerfile.prod .
+            sudo docker run orago-server
