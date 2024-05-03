@@ -26,12 +26,14 @@ jobs:
     needs: build
     steps:
       - name: SSH into EC2 instance and deploy
-        uses: shimataro/ssh-key-action@v2
+        uses: appleboy/ssh-action@master
         with:
-          known_hosts: ${{ secrets.HOST }}
-          name: ${{ secrets.USERNAME }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
+          timeout: 30m
+          command_timeout: 30m
           script: |
             sudo docker pull ${{ secrets.DOCKER_REPO_URL }}/orago-grocery-server:latest
             sudo docker stop orago-server || true
