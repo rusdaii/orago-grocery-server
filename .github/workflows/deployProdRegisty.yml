@@ -31,6 +31,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
           script: |
             sudo docker pull ${{ secrets.DOCKER_REPO_URL }}/orago-grocery-server:latest
             sudo docker stop orago-server || true
