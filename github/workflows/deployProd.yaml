@@ -1,0 +1,38 @@
+name: strapi aws deployment
+on:
+  push:
+    branches:
+      - main
+env:
+  PROJECT_NAME: orago-grocery-server # Change this
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          envs: PROJECT_NAME
+          script: |
+
+            if [ -d "$PROJECT_NAME" ]; then
+              echo "Directory already exists"
+              cd $PROJECT_NAME
+              git pull
+            else
+              git clone git@github.com:rusdaii/orago-grocery-server.git
+              cd $PROJECT_NAME
+            fi
+
+            docker build -t orago-server:latest -f Dockerfile.prod .
+            docker run orago-server
