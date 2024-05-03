@@ -26,10 +26,10 @@ jobs:
     needs: build
     steps:
       - name: SSH into EC2 instance and deploy
-        uses: appleboy/ssh-action@master
+        uses: shimataro/ssh-key-action@v2
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
+          known_hosts: ${{ secrets.HOST }}
+          name: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
