@@ -1,0 +1,38 @@
+name: strapi aws deployment
+on:
+  push:
+    branches:
+      - main
+env:
+  PROJECT_NAME: orago-grocery-server # Change this
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Build and push Docker image
+        run: |
+          docker build -t orago-grocery-server:latest -f Dockerfile.prod .
+          docker tag orago-grocery-server:latest ${{ secrets.DOCKER_REPO_URL }}/orago-grocery-server:latest
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push ${{ secrets.DOCKER_REPO_URL }}/orago-grocery-server:latest
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: SSH into EC2 instance and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo docker pull ${{ secrets.DOCKER_REPO_URL }}/orago-grocery-server:latest
+            sudo docker stop orago-server || true
+            sudo docker rm orago-server || true
+            sudo docker run -d -p 3000:3000 --name orago-server ${{ secrets.DOCKER_REPO_URL }}/orago-grocery-server:latest
